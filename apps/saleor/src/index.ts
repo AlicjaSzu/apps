@@ -1,6 +1,6 @@
 import { DialogExtensionSDK, FieldExtensionSDK } from '@contentful/app-sdk';
 import { setup, renderSkuPicker } from '@contentful/ecommerce-app-base';
-import { dialogConfig, DIALOG_ID, SKUPickerConfig, strings } from './constants';
+import { dialogConfig, DIALOG_ID, SKUPickerConfig, strings, CHANNEL_SLUG } from './constants';
 
 import PaginatedFetcher from './PaginatedFetcher';
 import { ClientConfig, Identifiers } from './types';
@@ -12,6 +12,9 @@ const makeCTA = (fieldType: string) => {
 const validateParameters = (parameters: ClientConfig): string | null => {
   if (parameters.apiEndpoint.length < 1) {
     return 'Missing API Endpoint';
+  }
+  if (parameters.channelSlug.length < 1) {
+    return 'Missing channel slug';
   }
 
   return null;
@@ -27,7 +30,11 @@ const createContainer = () => {
 
 const renderDialog = async (sdk: DialogExtensionSDK) => {
   createContainer();
-  const fetcher = new PaginatedFetcher(sdk.parameters.installation as ClientConfig);
+  const invocation = sdk.parameters.invocation as any;
+  const installation = sdk.parameters.installation;
+
+  const fetcherArgs = {apiEndpoint:installation.apiEndpoint , channelSlug: invocation.channelSlug || installation.channelSlug}
+  const fetcher = new PaginatedFetcher( fetcherArgs as ClientConfig);
 
   renderSkuPicker(DIALOG_ID, {
     sdk,
@@ -39,10 +46,12 @@ const renderDialog = async (sdk: DialogExtensionSDK) => {
 };
 
 const openDialog = async (sdk: FieldExtensionSDK, currentValue: any, parameters: ClientConfig) => {
+  const channelField = sdk.entry.fields[CHANNEL_SLUG];
+  const channelFieldValue:string = channelField?.getValue();
   const skus = await sdk.dialogs.openCurrentApp({
     title: makeCTA(sdk.field.type),
     // @ts-expect-error Incompatible types
-    parameters,
+    parameters: channelFieldValue? {...parameters, channelSlug: channelFieldValue} : parameters,
     ...dialogConfig,
   });
 

@@ -19,12 +19,13 @@ class PaginatedFetcher {
   lastSearch?: string;
   productsIds: string[] = [];
   lastPaginationInfo: Pagination = defaultPagination;
+  channelSlug: string = ''
 
-  constructor({ apiEndpoint }: ClientConfig) {
-    this.apiClient = new ApiClient({ apiEndpoint });
+  constructor({ apiEndpoint, channelSlug }: ClientConfig) {
+    this.apiClient = new ApiClient({ apiEndpoint, channelSlug });
   }
 
-  getVariantsWithProducts = async (search: string) => {
+  getVariantsWithProducts = async (search: string) => { // channelSlug?: string
     if (this.shouldReturnNoProducts(search)) {
       return this.getNoItemsResponse();
     }

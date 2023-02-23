@@ -80,6 +80,7 @@ class DataParser {
       sku: DataParser.getDisplayLabel(id, sku),
       name: fullName,
       image: images[0]?.url || product?.images[0]?.url || '',
+      channel: product?.channel
     };
   };
 }

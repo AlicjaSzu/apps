@@ -2,6 +2,7 @@ import { Pagination, Product } from '@contentful/ecommerce-app-base';
 
 export interface ClientConfig {
   apiEndpoint: string;
+  channelSlug: string;
 }
 
 export type ApiData = ApiResponseCommonData & {
@@ -60,6 +61,7 @@ export type ApiProduct = {
   id: string;
   images: Image[];
   name: string;
+  channel: string
 };
 
 export type Image = { url: string };

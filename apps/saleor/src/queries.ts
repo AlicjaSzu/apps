@@ -3,13 +3,14 @@ import { Identifiers } from './types';
 import { ITEMS_OFFSET } from './constants';
 import { getFormattedIdentifiers } from './utils';
 
-export const fetchProductsQuery = (ids?: string[]) => gql`
+export const fetchProductsQuery = (ids?: string[], channelSlug: string = '') => gql`
   {
-    products(first: ${ITEMS_OFFSET}, filter: { ids: ${getFormattedIdentifiers(ids)} }) {
+    products(first: ${ITEMS_OFFSET}, channel:"${channelSlug}", filter: { ids: ${getFormattedIdentifiers(ids)} }) {
       edges {
         node {
           id
           name
+          channel
           images {
             url
           }
@@ -22,10 +23,11 @@ export const fetchProductsQuery = (ids?: string[]) => gql`
 export const fetchProductVariantsQuery = (
   search: string = '',
   skus?: Identifiers,
-  lastCursor: string = ''
+  lastCursor: string = '',
+  channelSlug: string = ''
 ) => gql`
   {
-    productVariants(first: ${ITEMS_OFFSET}, after: "${lastCursor}", filter: { search: "${search}", sku: ${getFormattedIdentifiers(
+    productVariants(first: ${ITEMS_OFFSET}, channel:"${channelSlug}", after: "${lastCursor}", filter: { search: "${search}", sku: ${getFormattedIdentifiers(
   skus
 )} } ) {
       totalCount
@@ -46,6 +48,7 @@ export const fetchProductVariantsQuery = (
           product{
             id
             name
+            channel
             images{
               url
             }

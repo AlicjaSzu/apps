@@ -5,6 +5,7 @@ import logo from './app-logo.svg';
 export const DIALOG_ID = 'sku-picker-root';
 export const ITEMS_OFFSET = 100;
 export const SALEOR_COLOR = '#3a3944';
+export const CHANNEL_SLUG = 'channelSlug';
 
 export const defaultPagination: Pagination = {
   offset: 0,
@@ -31,6 +32,13 @@ export const SKUPickerConfig = {
       id: 'apiEndpoint',
       name: 'Store API URL',
       description: 'The url to your store API',
+      type: 'Symbol',
+      required: true
+    },
+    {
+      id: CHANNEL_SLUG, 
+      name: "Default channel slug",      
+      description: 'Default channel slug',
       type: 'Symbol',
       required: true
     }

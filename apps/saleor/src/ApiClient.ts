@@ -7,25 +7,30 @@ type FetchVariantsParams = {
   search?: string;
   skus?: Identifiers;
   endCursor?: string;
+  channelSlug?: string;
 };
 
 type FetchProductsParams = {
   productIds?: Identifiers;
+   channelSlug?: string;
 };
 
 class ApiClient {
   private apiEndpoint: string;
-
-  constructor({ apiEndpoint }: ClientConfig) {
+  private channelSlug: string;
+  
+  constructor({ apiEndpoint, channelSlug }: ClientConfig) {
     this.apiEndpoint = apiEndpoint;
+    this.channelSlug = channelSlug
   }
 
   fetchVariants = async ({
     search,
     skus,
+    channelSlug,
     endCursor
   }: FetchVariantsParams): Promise<ProductVariantsData> => {
-    const res = await this.fetch(fetchProductVariantsQuery(search, skus, endCursor));
+    const res = await this.fetch(fetchProductVariantsQuery(search, skus, endCursor, channelSlug || this.channelSlug));
 
     const {
       data: { productVariants }
@@ -34,8 +39,8 @@ class ApiClient {
     return productVariants;
   };
 
-  fetchProducts = async ({ productIds }: FetchProductsParams): Promise<ProductsData> => {
-    const res = await this.fetch(fetchProductsQuery(productIds));
+  fetchProducts = async ({ productIds, channelSlug}: FetchProductsParams): Promise<ProductsData> => {
+    const res = await this.fetch(fetchProductsQuery(productIds, channelSlug || this.channelSlug));
 
     const {
       data: { products }
